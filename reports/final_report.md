@@ -63,8 +63,49 @@ The aggregate availability is lower because the simulation intentionally include
 | cache_stale_candidate:cache_false_hit_guardrail | False-hit guardrail records and blocks the 2024 vs 2026 cache candidate. | pass |
 | all_providers_down | All providers fail; gateway returns static fallback instead of crashing. | pass |
 | all_healthy | Primary provider is healthy; availability should be high with minimal fallback. | pass |
-### Example Circuit Transition Evidence
 
+### Circuit Transition Evidence
+
+The circuit breaker transition log shows that the gateway does not retry a failed provider indefinitely. When the primary provider fails repeatedly, the breaker opens, waits for the reset timeout, then moves into half-open mode for a recovery probe.
+
+```json
+[
+  {
+    "scenario": "primary_timeout_100",
+    "breaker": "primary",
+    "from": "closed",
+    "to": "open",
+    "reason": "failure_threshold"
+  },
+  {
+    "scenario": "primary_timeout_100",
+    "breaker": "primary",
+    "from": "open",
+    "to": "half_open",
+    "reason": "reset_timeout_elapsed"
+  },
+  {
+    "scenario": "primary_timeout_100",
+    "breaker": "primary",
+    "from": "half_open",
+    "to": "open",
+    "reason": "probe_failure"
+  },
+  {
+    "scenario": "primary_flaky_50",
+    "breaker": "primary",
+    "from": "open",
+    "to": "half_open",
+    "reason": "reset_timeout_elapsed"
+  },
+  {
+    "scenario": "primary_flaky_50",
+    "breaker": "primary",
+    "from": "half_open",
+    "to": "closed",
+    "reason": "probe_success"
+  }
+]
 ```text
 closed -> open: failure_threshold
 open -> half_open: reset_timeout_elapsed
