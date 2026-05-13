@@ -369,6 +369,15 @@ These are not required but demonstrate deeper understanding:
 - **Prometheus export**: Add `prometheus_client` counters/gauges matching the slide's metric names (`agent_requests_total`, `agent_latency_seconds`, `cache_hits_total`, `circuit_state`).
 - **SLO definition**: Define your own SLOs (e.g., availability >= 99%, P95 < 2.5s) and check whether your system meets them. Add a pass/fail SLO table to report.
 
+### Quick bonus checklist
+
+These are the easiest extra-credit items to show clearly in `reports/final_report.md`:
+
+- **False-hit analysis**: include the logged 2024 vs 2026 refund-policy cache miss and explain why it was blocked.
+- **Redis graceful degradation**: mention that Redis `get()`/`set()` errors return a miss instead of crashing the gateway.
+- **Concurrency evidence**: include the configured `load_test.concurrency` value and compare cache/no-cache metrics from the generated reports.
+- **SLO table**: add a short pass/fail table using existing metrics, such as availability, P95 latency, cache hit rate, and static fallback behavior.
+
 ---
 
 ## Common mistakes that lose points

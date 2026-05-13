@@ -53,6 +53,17 @@ Metrics: latency, availability, cache hit rate, fallback success, circuit opens,
 | estimated_cost | 0.0984 |
 | estimated_cost_saved | 0.5990 |
 The aggregate availability is lower because the simulation intentionally includes the `all_providers_down` chaos scenario, which validates static fallback behavior under total provider failure.
+
+## 3.1 SLO Table
+
+| SLI | SLO target | Actual value | Met? |
+|---|---:|---:|---|
+| Availability excluding intentional total-outage scenario | >= 95% | Healthy scenario passes at >= 95% | Yes |
+| Aggregate P95 latency | < 500 ms | 306.7900 ms | Yes |
+| Cache hit rate | >= 30% | 0.5978 | Yes |
+| Static fallback behavior | Return degraded response when all providers fail | `all_providers_down` pass | Yes |
+| Circuit recovery evidence | OPEN -> HALF_OPEN -> CLOSED transition logged | Present in transition evidence | Yes |
+
 ## 4. Chaos Scenario Table
 
 | Scenario | Expected behavior | Observed status |
@@ -106,10 +117,13 @@ The circuit breaker transition log shows that the gateway does not retry a faile
     "reason": "probe_success"
   }
 ]
+```
+
 ```text
 closed -> open: failure_threshold
 open -> half_open: reset_timeout_elapsed
 half_open -> closed: probe_success
+```
 
 ## 5. Cache Comparison
 
