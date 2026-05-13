@@ -18,3 +18,5 @@ def test_privacy_query_is_not_cached() -> None:
 
     assert cached is None
     assert score == 0.0
+
+    
